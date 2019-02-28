@@ -12,7 +12,7 @@
 #include <sys/netmgr.h>
 #include <string.h>
 
-#include "../../assign1_controller/src/door_entry.h"
+#include "../../Real-Time_Assign1_Controller/src/door_entry.h"
 
 int main(int argc, const char* argv[]) {
 
