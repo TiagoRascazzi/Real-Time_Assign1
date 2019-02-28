@@ -62,8 +62,6 @@ const char *inMessage[NUM_INPUTS] = {
 };
 
 
-
-
 #define NUM_OUTPUTS 12
 
 typedef enum {
