@@ -33,31 +33,38 @@ int main(void) {
 	while (1) {
 
 		controllerID = MsgReceive(chid, &display, sizeof(display), NULL);
+        MsgReply (controllerID, EOK, NULL, 0);
+
+		if(display.person.state == EXIT_STATE){
+        	printf("Exiting Display\n");
+        	break;
+
+        }else{
+			switch(display.msgIndex){
+			case SCAN_ACK:
+				printf(outMessage[display.msgIndex], display.person.personID);
+				break;
+			case WEIGHT_ACK:
+				printf(outMessage[display.msgIndex], display.person.weight);
+				break;
+
+			case SCAN_REQUEST:
+			case UNLOCK_LEFT_DOOR:
+			case UNLOCK_RIGHT_DOOR:
+			case OPEN_LEFT_DOOR:
+			case OPEN_RIGHT_DOOR:
+			case WEIGHT_REQUEST:
+			case CLOSE_LEFT_DOOR:
+			case CLOSE_RIGHT_DOOR:
+			case LOCK_LEFT_DOOR:
+			case LOCK_RIGHT_DOOR:
+				printf(outMessage[display.msgIndex]);
+				break;
+			}
+        }
 
 
-		switch(display.msgIndex){
-		case SCAN_ACK:
-			printf(outMessage[display.msgIndex], display.person.personID);
-			break;
-		case WEIGHT_ACK:
-			printf(outMessage[display.msgIndex], display.person.weight);
-			break;
 
-		case SCAN_REQUEST:
-		case UNLOCK_LEFT_DOOR:
-		case UNLOCK_RIGHT_DOOR:
-		case OPEN_LEFT_DOOR:
-		case OPEN_RIGHT_DOOR:
-		case WEIGHT_REQUEST:
-		case CLOSE_LEFT_DOOR:
-		case CLOSE_RIGHT_DOOR:
-		case LOCK_LEFT_DOOR:
-		case LOCK_RIGHT_DOOR:
-			printf(outMessage[display.msgIndex]);
-			break;
-		}
-
-        //MsgReply (controllerID, EOK, &response, sizeof(response));
 	}
 
     ChannelDestroy(chid);
