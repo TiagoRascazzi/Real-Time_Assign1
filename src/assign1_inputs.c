@@ -18,6 +18,7 @@ int main(int argc, const char* argv[]) {
 
 	int  coid;
 	pid_t controllerPID;
+	int response;
 
 	char input[64];
 
@@ -41,48 +42,81 @@ int main(int argc, const char* argv[]) {
 	while(1){
 
 		printf("Enter the event type ");
-		printf("(ls = Left Scan,  rs = Right Scan,  glu = Guard Left Unlock,  gru = Guard Right Unlock, lo = Left Open, ro = Right Open, ws = Weight Scale, lc = Left Close, rc = Right Close, gll = Guard Left Lock, grl = Guard Right Lock, exit = Exit Program)\n");
+		printf("(ls = Left Scan, rs = Right Scan, glu = Guard Left Unlock, gru = Guard Right Unlock, lo = Left Open, ro = Right Open, ws = Weight Scale, lc = Left Close, rc = Right Close, gll = Guard Left Lock, grl = Guard Right Lock, exit = Exit Program)\n\n");
 
-		scanf("%s", input);
+		scanf("%s", &input);
 
 		if (strcmp(input, "ls") == 0){
 
+			printf("Enter the Person's ID: ");
+			fflush(stdout);
+			scanf("%d", &person.personID);
+			printf("Person scanned ID, ID = %d\n", person.personID);
+
+			person.direction = INBOUND;
+			person.state = SCAN_STATE;
+
 		} else if (strcmp(input, "rs") == 0){
 
+			printf("Enter the Person's ID: ");
+			fflush(stdout);
+			scanf("%d", &person.personID);
+			printf("Person scanned ID, ID = %d\n", person.personID);
+
+			person.direction = OUTBOUND;
+			person.state = SCAN_STATE;
+
 		} else if (strcmp(input, "glu") == 0){
+			person.state = UNLOCK_LEFT_DOOR_STATE;
 
 		} else if (strcmp(input, "gru") == 0){
+			person.state = UNLOCK_RIGHT_DOOR_STATE;
 
 		} else if (strcmp(input, "lo") == 0){
+			person.state = OPEN_LEFT_STATE;
 
 		} else if (strcmp(input, "ro") == 0){
+			person.state = OPEN_RIGHT_STATE;
 
 		} else if (strcmp(input, "ws") == 0){
 
+			printf("Enter the person's Weight: ");
+			fflush(stdout);
+			scanf("%d", &person.weight);
+			printf("Person weighed, Weight = %d\n", person.weight);
+
+			person.state = WEIGHT_STATE;
+
 		} else if (strcmp(input, "lc") == 0){
+			person.state = CLOSE_LEFT_STATE;
 
 		} else if (strcmp(input, "rc") == 0){
+			person.state = CLOSE_RIGHT_STATE;
 
 		} else if (strcmp(input, "gll") == 0){
+			person.state = LOCK_LEFT_DOOR_STATE;
 
 		} else if (strcmp(input, "grl") == 0){
+			person.state = LOCK_RIGHT_DOOR_STATE;
 
 		} else if (strcmp(input, "exit") == 0){
-
-		} else {
+			person.state = EXIT_STATE;
 
 		}
 
 		// send the message
-		/*if (MsgSend(coid, &person, sizeof(person), &response, sizeof(response)) == -1) {
+		if (MsgSend(coid, &person, sizeof(person), &response, sizeof(response)) == -1) {
 			fprintf (stderr, "Error during MsgSend\n");
 			perror (NULL);
 			exit (EXIT_FAILURE);
-		}*/
+		}
+
+		if (strcmp(input, "exit") == 0){
+			break;
+		}
 	}
 
 	ConnectDetach(coid);
-
 	return EXIT_SUCCESS;
 }
 
