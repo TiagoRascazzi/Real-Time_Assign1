@@ -23,7 +23,7 @@ typedef enum {
 	CLOSE_RIGHT_STATE,
 	LOCK_LEFT_DOOR_STATE,
 	LOCK_RIGHT_DOOR_STATE,
-	END_STATE
+	EXIT_STATE
 } State;
 
 
@@ -115,8 +115,5 @@ typedef struct {
 	Output msgIndex; //index to outMessages
 	Person person;
 } Display;
-
-
-
 
 #endif

@@ -15,17 +15,33 @@
 
 #include "door_entry.h"
 
+void startState();
+void scanState();
+void unlockLeftDoorState();
+void unlockRightDoorState();
+void openLeftState();
+void openRightState();
+void weightState();
+void closeLeftState();
+void closeRightState();
+void lockLeftDoorState();
+void lockRightDoorState();
+void exitState();
+
+int  displayCOID;
+Display display; //display sent to the display
+
+
 int main(int argc, const char* argv[]) {
 
 
+	void (*stateFunctions[12])(void) = {startState, scanState, unlockLeftDoorState, unlockRightDoorState, openLeftState, openRightState, weightState, closeLeftState, closeRightState, lockLeftDoorState, lockRightDoorState, exitState};
+
 	int inputID;	// indicates who we should reply to
 	int chid;		// the channel ID
-
-	int  displayCOID;
 	pid_t displayPID;
 
 	Person person; //person received from inputs
-	Display display; //display sent to the display
 
 	if( argc != 2 ){
 		perror("Invalid argument");
@@ -41,7 +57,7 @@ int main(int argc, const char* argv[]) {
 	}
 
 	printf("The controller is running as PID : %d\n", getpid());
-	printf("Waiting for Person...");
+	printf("Waiting for Person...\n");
 
 	//Connect the display
 	displayCOID = ConnectAttach (ND_LOCAL_NODE, displayPID, 1, _NTO_SIDE_CHANNEL, 0);
@@ -51,50 +67,86 @@ int main(int argc, const char* argv[]) {
 		exit (EXIT_FAILURE);
 	}
 
-
 	while (1) {
+
 		inputID = MsgReceive(chid, &person, sizeof(person), NULL);
+        MsgReply (inputID, EOK, NULL, 0);
 
-		switch(person.state){
-		case START_STATE:
-			break;
-		case SCAN_STATE:
-			break;
-		case UNLOCK_LEFT_DOOR_STATE:
-			break;
-		case UNLOCK_RIGHT_DOOR_STATE:
-			break;
-		case OPEN_LEFT_STATE:
-			break;
-		case OPEN_RIGHT_STATE:
-			break;
-		case WEIGHT_STATE:
-			break;
-		case CLOSE_LEFT_STATE:
-			break;
-		case CLOSE_RIGHT_STATE:
-			break;
-		case LOCK_LEFT_DOOR_STATE:
-			break;
-		case LOCK_RIGHT_DOOR_STATE:
-			break;
-		case END_STATE:
-			break;
-		}
+		display.person = person;
+		stateFunctions[person.state]();
 
-		// send the message
-		/*if (MsgSend(displayCOID, &display, sizeof(display), &response, sizeof(response)) == -1) {
-			fprintf (stderr, "Error during MsgSend\n");
-			perror (NULL);
-			exit (EXIT_FAILURE);
-		}*/
-
-        //MsgReply (inputID, EOK, &response, sizeof(response));
 	}
-
 
 	ChannelDestroy(chid);
 	ConnectDetach(displayCOID);
-
 	return EXIT_SUCCESS;
+}
+
+
+void startState(){
+
+}
+
+void scanState(){
+
+	int response;
+
+	// send the message
+	if (MsgSend(displayCOID, &display, sizeof(display), &response, sizeof(response)) == -1) {
+		fprintf (stderr, "Error during MsgSend\n");
+		perror (NULL);
+		exit (EXIT_FAILURE);
+	}
+}
+
+void unlockLeftDoorState(){
+
+}
+
+void unlockRightDoorState(){
+
+}
+
+void openLeftState(){
+
+}
+
+void openRightState(){
+
+}
+
+void weightState(){
+
+}
+
+void closeLeftState(){
+
+}
+
+void closeRightState(){
+
+}
+
+void lockLeftDoorState(){
+
+}
+
+void lockRightDoorState(){
+
+}
+
+void exitState(){
+
+	int response;
+
+	// send the message
+	if (MsgSend(displayCOID, &display, sizeof(display), &response, sizeof(response)) == -1) {
+		fprintf (stderr, "Error during MsgSend\n");
+		perror (NULL);
+		exit (EXIT_FAILURE);
+	}
+
+	printf("Exiting Controller\n");
+
+	exit (EXIT_SUCCESS);
 }
