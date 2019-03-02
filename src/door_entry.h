@@ -62,6 +62,8 @@ const char *inMessage[NUM_INPUTS] = {
 };
 
 
+
+
 #define NUM_OUTPUTS 12
 
 typedef enum {
@@ -107,7 +109,8 @@ typedef struct {
 	int personID;
 	int weight;
 	Dirrection direction;
-	State state;
+	Input input;
+	//TODO maybe add State state;
 } Person;
 
 // controller client sends a Display struct to its server, the display
