@@ -51,7 +51,7 @@ int main(int argc, const char* argv[]) {
 			printf("Enter the Person's ID: ");
 			fflush(stdout);
 			scanf("%d", &person.personID);
-			printf("Person scanned ID, ID = %d\n", person.personID);
+			//printf("Person scanned ID, ID = %d\n", person.personID);
 
 			person.direction = INBOUND;
 			person.state = SCAN_STATE;
@@ -61,7 +61,7 @@ int main(int argc, const char* argv[]) {
 			printf("Enter the Person's ID: ");
 			fflush(stdout);
 			scanf("%d", &person.personID);
-			printf("Person scanned ID, ID = %d\n", person.personID);
+			//printf("Person scanned ID, ID = %d\n", person.personID);
 
 			person.direction = OUTBOUND;
 			person.state = SCAN_STATE;
@@ -83,7 +83,7 @@ int main(int argc, const char* argv[]) {
 			printf("Enter the person's Weight: ");
 			fflush(stdout);
 			scanf("%d", &person.weight);
-			printf("Person weighed, Weight = %d\n", person.weight);
+			//printf("Person weighed, Weight = %d\n", person.weight);
 
 			person.state = WEIGHT_STATE;
 
