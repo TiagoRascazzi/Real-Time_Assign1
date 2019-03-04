@@ -16,33 +16,24 @@
 #include "door_entry.h"
 
 
-typedef void *(*StateFunc)(Person input);
+typedef void *(*StateFunc)(Person, Display, int);
 
-void* startState(Person input);
-void* scanState(Person input);
-void* unlockLeftDoorState(Person input);
-void* unlockRightDoorState(Person input);
-void* openLeftState(Person input);
-void* openRightState(Person input);
-void* weightState(Person input);
-void* closeLeftState(Person input);
-void* closeRightState(Person input);
-void* lockLeftDoorState(Person input);
-void* lockRightDoorState(Person input);
-void* exitState(Person input);
-
-int  displayCOID;
-Display display; //display sent to the display
+void* scanState(Person person, Display display, int  displayCOID);
+void* unlockState(Person person, Display display, int  displayCOID);
+void* openState(Person person, Display display, int  displayCOID);
+void* weightState(Person person, Display display, int  displayCOID);
+void* closeState(Person person, Display display, int  displayCOID);
+void* lockState(Person person, Display display, int  displayCOID);
+void* exitState(Person person, Display display, int  displayCOID);
 
 
 int main(int argc, const char* argv[]) {
 
-
-	//void (*stateFunctions[12])(void) = {startState, scanState, unlockLeftDoorState, unlockRightDoorState, openLeftState, openRightState, weightState, closeLeftState, closeRightState, lockLeftDoorState, lockRightDoorState, exitState};
-
 	int inputID;	// indicates who we should reply to
 	int chid;		// the channel ID
 	pid_t displayPID;
+	int  displayCOID;
+	Display display; //display sent to the display
 
 	Person person; //person received from inputs
 
@@ -70,16 +61,32 @@ int main(int argc, const char* argv[]) {
 		exit (EXIT_FAILURE);
 	}
 
-	StateFunc statefunc = startState;
+
+	StateFunc statefunc = scanState;
 
 	while (1) {
 
 		inputID = MsgReceive(chid, &person, sizeof(person), NULL);
-        MsgReply (inputID, EOK, NULL, 0);
 
-		//display.person = person;
+		if(person.input == EXIT){
+			display.person = person;
+			display.msgIndex = EXIT_OUTPUT;
 
-	    statefunc = (StateFunc)(*statefunc)(person);
+			// send the message
+			if (MsgSend(displayCOID, &display, sizeof(display), NULL, 0) == -1) {
+				fprintf (stderr, "Error during MsgSend\n");
+				perror (NULL);
+				exit (EXIT_FAILURE);
+			}
+
+			printf("Exiting Controller\n");
+			break;
+		}
+
+
+	    statefunc = (StateFunc)(*statefunc)(person, display, displayCOID);
+
+        MsgReply (inputID, EOK, &person, sizeof(person));
 
 	}
 
@@ -87,6 +94,89 @@ int main(int argc, const char* argv[]) {
 	ConnectDetach(displayCOID);
 	return EXIT_SUCCESS;
 }
+
+
+
+void* scanState(Person person, Display display, int  displayCOID){
+
+
+	if(person.input == EXIT){
+		return exitState;
+	}
+	return scanState;
+}
+
+void* unlockState(Person person, Display display, int  displayCOID){
+
+
+	if(person.input == EXIT){
+		return exitState;
+	}
+
+	return unlockState;
+}
+
+void* openState(Person person, Display display, int  displayCOID){
+
+
+	if(person.input == EXIT){
+		return exitState;
+	}
+
+	return openState;
+}
+
+void* weightState(Person person, Display display, int  displayCOID){
+
+
+	if(person.input == EXIT){
+		return exitState;
+	}
+
+	return weightState;
+}
+
+void* closeState(Person person, Display display, int  displayCOID){
+
+
+	if(person.input == EXIT){
+		return exitState;
+	}
+
+	return closeState;
+}
+
+void* lockState(Person person, Display display, int  displayCOID){
+
+
+	if(person.input == EXIT){
+		return exitState;
+	}
+
+	return lockState;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //	int response;
 //
@@ -98,200 +188,3 @@ int main(int argc, const char* argv[]) {
 //		perror (NULL);
 //		exit (EXIT_FAILURE);
 //	}
-
-
-void* startState(Person input){
-	if(input.input == LS){
-		display.person.direction = INBOUND;
-		return scanState;
-	}
-
-	if(input.input == RS){
-		display.person.direction = OUTBOUND;
-		return scanState;
-	}
-
-	if(input.input == EXIT){
-		return exitState;
-	}
-
-	return startState;
-}
-
-void* scanState(Person input){
-
-	if(input.direction == INBOUND && input.input == GLU){
-		return unlockLeftDoorState;
-	}
-
-	if(input.direction == OUTBOUND && input.input == GRU){
-		return unlockRightDoorState;
-	}
-
-	if(input.input == EXIT){
-		return exitState;
-	}
-
-	return scanState;
-}
-
-void* unlockLeftDoorState(Person input){
-
-	if(input.direction == INBOUND && input.input == LO){
-		return openLeftState;
-	}
-
-	if(input.direction == OUTBOUND && input.input == LO){
-		return openLeftState;
-	}
-
-	if(input.input == EXIT){
-		return exitState;
-	}
-
-	return unlockLeftDoorState;
-}
-
-void* unlockRightDoorState(Person input){
-	if(input.direction == INBOUND && input.input == RO){
-		return openRightState;
-	}
-
-	if(input.direction == OUTBOUND && input.input == RO){
-		return openRightState;
-	}
-
-	if(input.input == EXIT){
-		return exitState;
-	}
-
-	return unlockRightDoorState;
-}
-
-void* openLeftState(Person input){
-	if(input.direction == INBOUND && input.input == WS){
-		return weightState;
-	}
-
-	if(input.direction == OUTBOUND && input.input == LC){
-		return closeLeftState;
-	}
-
-	if(input.input == EXIT){
-		return exitState;
-	}
-
-	return openLeftState;
-}
-
-void* openRightState(Person input){
-	if(input.direction == INBOUND && input.input == RC){
-		return closeRightState;
-	}
-
-	if(input.direction == OUTBOUND && input.input == WS){
-		return weightState;
-	}
-
-	if(input.input == EXIT){
-		return exitState;
-	}
-
-	return openRightState;
-}
-
-void* weightState(Person input){
-	if(input.direction == INBOUND && input.input == LC){
-		return closeLeftState;
-	}
-
-	if(input.direction == OUTBOUND && input.input == RC){
-		return closeRightState;
-	}
-
-	if(input.input == EXIT){
-		return exitState;
-	}
-
-	return weightState;
-}
-
-void* closeLeftState(Person input){
-	if(input.direction == INBOUND && input.input == GLL){
-		return lockLeftDoorState;
-	}
-
-	if(input.direction == OUTBOUND && input.input == GLL){
-		return lockLeftDoorState;
-	}
-
-	if(input.input == EXIT){
-		return exitState;
-	}
-
-	return closeLeftState;
-}
-
-void* closeRightState(Person input){
-	if(input.direction == INBOUND && input.input == GRL){
-		return lockRightDoorState;
-	}
-
-	if(input.direction == OUTBOUND && input.input == GRL){
-		return lockRightDoorState;
-	}
-
-	if(input.input == EXIT){
-		return exitState;
-	}
-
-	return closeRightState;
-}
-
-void* lockLeftDoorState(Person input){
-	if(input.direction == INBOUND && input.input == GRU){
-		return unlockRightDoorState;
-	}
-
-	if(input.direction == OUTBOUND && (input.input == LS || input.input == RS) ){
-		return scanState;
-	}
-
-	if(input.input == EXIT){
-		return exitState;
-	}
-
-	return lockLeftDoorState;
-}
-
-void* lockRightDoorState(Person input){
-	if(input.direction == INBOUND && (input.input == LS || input.input == RS)){
-		return scanState;
-	}
-
-	if(input.direction == OUTBOUND && input.input == GLU){
-		return unlockLeftDoorState;
-	}
-
-	if(input.input == EXIT){
-		return exitState;
-	}
-
-	return lockRightDoorState;
-}
-
-void* exitState(Person input){
-
-	int response;
-
-	// send the message
-	if (MsgSend(displayCOID, &display, sizeof(display), &response, sizeof(response)) == -1) {
-		fprintf (stderr, "Error during MsgSend\n");
-		perror (NULL);
-		exit (EXIT_FAILURE);
-	}
-
-	printf("Exiting Controller\n");
-
-	exit (EXIT_SUCCESS);
-}

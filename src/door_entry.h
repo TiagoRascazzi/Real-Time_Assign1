@@ -9,21 +9,15 @@
 #define DOOR_ENTRY_H_
 
 
-#define NUM_STATES 12
+#define NUM_STATES 6
 
 typedef enum {
-	START_STATE,
 	SCAN_STATE,
-	UNLOCK_LEFT_DOOR_STATE,
-	UNLOCK_RIGHT_DOOR_STATE,
-	OPEN_LEFT_STATE,
-	OPEN_RIGHT_STATE,
+	UNLOCK_DOOR_STATE,
+	OPEN_DOOR_STATE,
 	WEIGHT_STATE,
-	CLOSE_LEFT_STATE,
-	CLOSE_RIGHT_STATE,
-	LOCK_LEFT_DOOR_STATE,
-	LOCK_RIGHT_DOOR_STATE,
-	EXIT_STATE
+	CLOSE_DOOR_STATE,
+	LOCK_DOOR_STATE
 } State;
 
 
@@ -64,36 +58,34 @@ const char *inMessage[NUM_INPUTS] = {
 
 
 
-#define NUM_OUTPUTS 12
+#define NUM_OUTPUTS 11
 
 typedef enum {
-	SCAN_REQUEST,
 	SCAN_ACK,
 	UNLOCK_LEFT_DOOR,
 	UNLOCK_RIGHT_DOOR,
 	OPEN_LEFT_DOOR,
 	OPEN_RIGHT_DOOR,
-	WEIGHT_REQUEST,
 	WEIGHT_ACK,
 	CLOSE_LEFT_DOOR,
 	CLOSE_RIGHT_DOOR,
 	LOCK_LEFT_DOOR,
-	LOCK_RIGHT_DOOR
+	LOCK_RIGHT_DOOR,
+	EXIT_OUTPUT
 } Output;
 
 const char *outMessage[NUM_OUTPUTS] = {
-	"Enter the Person's ID: ",
 	"Person scanned ID, ID = %d",
 	"Left door unlocked by Guard",
 	"Right door unlocked by Guard",
 	"Left door opened",
 	"Right door opened",
-	"Enter the person's Weight: ",
 	"Person weighed, Weight = %d",
 	"Left door closed",
 	"Right door closed",
 	"Left door locked by Guard",
 	"Right door locked by Guard"
+	"Exiting Display"
 };
 
 
@@ -110,7 +102,6 @@ typedef struct {
 	int weight;
 	Dirrection direction;
 	Input input;
-	//TODO maybe add State state;
 } Person;
 
 // controller client sends a Display struct to its server, the display
