@@ -14,15 +14,17 @@
 
 #include "../../Real-Time_Assign1_Controller/src/door_entry.h"
 
+int requestPersonID();
+int requestPersonWeight();
+
 int main(int argc, const char* argv[]) {
 
 	int  coid;
 	pid_t controllerPID;
-	int response;
 
 	char input[64];
 
-	Person person; //person to sent to the controller
+	Person person; //person to sent to/received from the controller
 
 	if( argc != 2 ){
 		perror("Invalid argument");
@@ -46,66 +48,32 @@ int main(int argc, const char* argv[]) {
 
 		scanf("%s", &input);
 
-		if (strcmp(input, "ls") == 0){
+		for(int i=0; i<NUM_INPUTS; i++){
+			if(strcmp(input, inMessage[i]) == 0){
 
-			printf("Enter the Person's ID: ");
-			fflush(stdout);
-			scanf("%d", &person.personID);
-			//printf("Person scanned ID, ID = %d\n", person.personID);
+				if(strcmp(input, "ls") == 0){
 
-			person.direction = INBOUND;
-			person.state = SCAN_STATE;
+					person.personID = requestPersonID();
+					person.direction = INBOUND;
 
-		} else if (strcmp(input, "rs") == 0){
+				}else if(strcmp(input, "rs") == 0){
 
-			printf("Enter the Person's ID: ");
-			fflush(stdout);
-			scanf("%d", &person.personID);
-			//printf("Person scanned ID, ID = %d\n", person.personID);
+					person.personID = requestPersonID();
+					person.direction = OUTBOUND;
 
-			person.direction = OUTBOUND;
-			person.state = SCAN_STATE;
+				}else if(strcmp(input, "ws") == 0){
 
-		} else if (strcmp(input, "glu") == 0){
-			person.state = UNLOCK_LEFT_DOOR_STATE;
+					person.weight = requestPersonWeight();
 
-		} else if (strcmp(input, "gru") == 0){
-			person.state = UNLOCK_RIGHT_DOOR_STATE;
+				}
 
-		} else if (strcmp(input, "lo") == 0){
-			person.state = OPEN_LEFT_STATE;
-
-		} else if (strcmp(input, "ro") == 0){
-			person.state = OPEN_RIGHT_STATE;
-
-		} else if (strcmp(input, "ws") == 0){
-
-			printf("Enter the person's Weight: ");
-			fflush(stdout);
-			scanf("%d", &person.weight);
-			//printf("Person weighed, Weight = %d\n", person.weight);
-
-			person.state = WEIGHT_STATE;
-
-		} else if (strcmp(input, "lc") == 0){
-			person.state = CLOSE_LEFT_STATE;
-
-		} else if (strcmp(input, "rc") == 0){
-			person.state = CLOSE_RIGHT_STATE;
-
-		} else if (strcmp(input, "gll") == 0){
-			person.state = LOCK_LEFT_DOOR_STATE;
-
-		} else if (strcmp(input, "grl") == 0){
-			person.state = LOCK_RIGHT_DOOR_STATE;
-
-		} else if (strcmp(input, "exit") == 0){
-			person.state = EXIT_STATE;
-
+				person.input = i;
+				break;
+			}
 		}
 
 		// send the message
-		if (MsgSend(coid, &person, sizeof(person), &response, sizeof(response)) == -1) {
+		if (MsgSend(coid, &person, sizeof(person), &person, sizeof(person)) == -1) {
 			fprintf (stderr, "Error during MsgSend\n");
 			perror (NULL);
 			exit (EXIT_FAILURE);
@@ -120,3 +88,37 @@ int main(int argc, const char* argv[]) {
 	return EXIT_SUCCESS;
 }
 
+
+int requestPersonID(){
+	int personID = -1;
+	while (personID < 0) {
+		printf("Enter the Person's ID: ");
+		fflush(stdout);
+		scanf("%d", &personID);
+
+		if(personID < 0){
+			char c;
+			while ((c = getchar()) != '\n' && c != EOF) {
+			}
+			printf("Invalid input: Person's ID must be a number greater then 0\n\n");
+		}
+	}
+	return personID;
+}
+
+int requestPersonWeight(){
+	int personID = -1;
+	while (personID < 0) {
+		printf("Enter the person's Weight: ");
+		fflush(stdout);
+		scanf("%d", &personID);
+
+		if(personID < 0){
+			char c;
+			while ((c = getchar()) != '\n' && c != EOF) {
+			}
+			printf("Invalid input: Person's weight must be a number greater then 0\n\n");
+		}
+	}
+	return personID;
+}
