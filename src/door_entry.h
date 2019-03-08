@@ -9,21 +9,6 @@
 #define DOOR_ENTRY_H_
 
 
-/*#define NUM_STATES 7
-
-typedef enum {
-	STARTED_STATE,
-	SCANNED_STATE,
-	UNLOCKED_DOOR_STATE,
-	OPENED_DOOR_STATE,
-	WEIGHTED_STATE,
-	CLOSED_DOOR_STATE,
-	LOCKED_DOOR_STATE
-} State;
-
-*/
-
-
 #define NUM_INPUTS 12
 
 typedef enum {
