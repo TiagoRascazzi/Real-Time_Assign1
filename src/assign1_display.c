@@ -30,6 +30,7 @@ int main(void) {
 	}
 
 	printf("The display is running as PID : %d\n", getpid());
+	fflush(stdout);
 
 	while (running) {
 
@@ -37,27 +38,29 @@ int main(void) {
 
 		switch(display.msgIndex){
 		case SCAN_ACK:
-			printf(outMessage[display.msgIndex], display.person.personID);
+			printf("%s %d\n", outMessage[display.msgIndex], display.person.personID);
 			break;
 		case WEIGHT_ACK:
-			printf(outMessage[display.msgIndex], display.person.weight);
+			printf("%s %d\n", outMessage[display.msgIndex], display.person.weight);
 			break;
 
-		case UNLOCK_LEFT_DOOR:
-		case UNLOCK_RIGHT_DOOR:
-		case OPEN_LEFT_DOOR:
-		case OPEN_RIGHT_DOOR:
-		case CLOSE_LEFT_DOOR:
-		case CLOSE_RIGHT_DOOR:
-		case LOCK_LEFT_DOOR:
-		case LOCK_RIGHT_DOOR:
-			printf(outMessage[display.msgIndex]);
+		case UNLOCKED_LEFT_DOOR:
+		case UNLOCKED_RIGHT_DOOR:
+		case OPENED_LEFT_DOOR:
+		case OPENED_RIGHT_DOOR:
+		case CLOSED_LEFT_DOOR:
+		case CLOSED_RIGHT_DOOR:
+		case LOCKED_LEFT_DOOR:
+		case LOCKED_RIGHT_DOOR:
+		case INVALID_INPUT:
+			printf("%s\n", outMessage[display.msgIndex]);
 			break;
-		case EXIT_OUTPUT:
-			printf(outMessage[display.msgIndex]);
+		case EXIT_MSG:
+			printf("%s\n", outMessage[display.msgIndex]);
 			running = 0;
 			break;
 		}
+		fflush(stdout);
 
         MsgReply (controllerID, EOK, NULL, 0);
 	}
