@@ -9,18 +9,19 @@
 #define DOOR_ENTRY_H_
 
 
-#define NUM_STATES 6
+/*#define NUM_STATES 7
 
 typedef enum {
-	SCAN_STATE,
-	UNLOCK_DOOR_STATE,
-	OPEN_DOOR_STATE,
-	WEIGHT_STATE,
-	CLOSE_DOOR_STATE,
-	LOCK_DOOR_STATE
+	STARTED_STATE,
+	SCANNED_STATE,
+	UNLOCKED_DOOR_STATE,
+	OPENED_DOOR_STATE,
+	WEIGHTED_STATE,
+	CLOSED_DOOR_STATE,
+	LOCKED_DOOR_STATE
 } State;
 
-
+*/
 
 
 #define NUM_INPUTS 12
@@ -55,36 +56,53 @@ const char *inMessage[NUM_INPUTS] = {
 	"exit"
 };
 
+const char *inMessageDesc[NUM_INPUTS] = {
+	"Left Scan",
+	"Right Scan",
+	"Guard Left Unlock",
+	"Guard Right Unlock",
+	"Left Open",
+	"Right Open",
+	"Weight Scale",
+	"Left Close",
+	"Right Close",
+	"Guard Left Lock",
+	"Guard Right Lock",
+	"Exit Program"
+};
 
 
 
-#define NUM_OUTPUTS 11
+
+#define NUM_OUTPUTS 12
 
 typedef enum {
 	SCAN_ACK,
-	UNLOCK_LEFT_DOOR,
-	UNLOCK_RIGHT_DOOR,
-	OPEN_LEFT_DOOR,
-	OPEN_RIGHT_DOOR,
+	UNLOCKED_LEFT_DOOR,
+	UNLOCKED_RIGHT_DOOR,
+	OPENED_LEFT_DOOR,
+	OPENED_RIGHT_DOOR,
 	WEIGHT_ACK,
-	CLOSE_LEFT_DOOR,
-	CLOSE_RIGHT_DOOR,
-	LOCK_LEFT_DOOR,
-	LOCK_RIGHT_DOOR,
-	EXIT_OUTPUT
+	CLOSED_LEFT_DOOR,
+	CLOSED_RIGHT_DOOR,
+	LOCKED_LEFT_DOOR,
+	LOCKED_RIGHT_DOOR,
+	INVALID_INPUT,
+	EXIT_MSG
 } Output;
 
 const char *outMessage[NUM_OUTPUTS] = {
-	"Person scanned ID, ID = %d",
+	"Person scanned ID, ID =",
 	"Left door unlocked by Guard",
 	"Right door unlocked by Guard",
 	"Left door opened",
 	"Right door opened",
-	"Person weighed, Weight = %d",
+	"Person weighed, Weight =",
 	"Left door closed",
 	"Right door closed",
 	"Left door locked by Guard",
-	"Right door locked by Guard"
+	"Right door locked by Guard",
+	"Invalid input, for current state",
 	"Exiting Display"
 };
 
@@ -96,11 +114,17 @@ typedef enum{
 	OUTBOUND
 } Dirrection;
 
+typedef enum{
+	LEFT_DOOR,
+	RIGHT_DOOR
+} Door;
+
 // inputs client sends a Person struct to its server, the controller
 typedef struct {
 	int personID;
 	int weight;
 	Dirrection direction;
+	Door door;
 	Input input;
 } Person;
 
