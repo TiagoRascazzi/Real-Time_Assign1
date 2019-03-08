@@ -145,7 +145,6 @@ int requestPersonWeight(){
 
 
 void printInputList(){
-
 	printf("\nInput list:\n");
 	for(int i=0; i<NUM_INPUTS; i++){
 		printf("\t%s = %s,\n", inMessage[i], inMessageDesc[i]);
