@@ -145,7 +145,6 @@ int requestPersonWeight(){
 
 
 void printInputList(){
-	//printf("(ls = Left Scan, rs = Right Scan, glu = Guard Left Unlock, gru = Guard Right Unlock, lo = Left Open, ro = Right Open, ws = Weight Scale, lc = Left Close, rc = Right Close, gll = Guard Left Lock, grl = Guard Right Lock, exit = Exit Program)\n\n");
 
 	printf("\nInput list:\n");
 	for(int i=0; i<NUM_INPUTS; i++){
