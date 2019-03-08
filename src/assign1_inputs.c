@@ -14,6 +14,8 @@
 
 #include "../../Real-Time_Assign1_Controller/src/door_entry.h"
 
+void printInputList();
+void getInput(char* input);
 int requestPersonID();
 int requestPersonWeight();
 
@@ -43,23 +45,14 @@ int main(int argc, const char* argv[]) {
 
 	while(1){
 
-		printf("Enter the event type ");
-		printf("(ls = Left Scan, rs = Right Scan, glu = Guard Left Unlock, gru = Guard Right Unlock, lo = Left Open, ro = Right Open, ws = Weight Scale, lc = Left Close, rc = Right Close, gll = Guard Left Lock, grl = Guard Right Lock, exit = Exit Program)\n\n");
-
-		scanf("%s", &input);
+		getInput(input);
 
 		for(int i=0; i<NUM_INPUTS; i++){
 			if(strcmp(input, inMessage[i]) == 0){
 
-				if(strcmp(input, "ls") == 0){
+				if(strcmp(input, "ls") == 0 || strcmp(input, "rs") == 0){
 
 					person.personID = requestPersonID();
-					person.direction = INBOUND;
-
-				}else if(strcmp(input, "rs") == 0){
-
-					person.personID = requestPersonID();
-					person.direction = OUTBOUND;
 
 				}else if(strcmp(input, "ws") == 0){
 
@@ -89,12 +82,38 @@ int main(int argc, const char* argv[]) {
 }
 
 
+void getInput(char* input){
+
+	int isValid = 0;
+
+	printInputList();
+
+	while(!isValid){
+
+		scanf("%s", input);
+
+		for(int i=0; i<NUM_INPUTS; i++){
+			if(strcmp(input ,inMessage[i]) == 0){
+				isValid = 1;
+				break;
+			}
+		}
+
+		if(!isValid){
+			printf("Invalid input, try again \n");
+			printInputList();
+		}
+	}
+
+}
+
 int requestPersonID(){
 	int personID = -1;
 	while (personID < 0) {
 		printf("Enter the Person's ID: ");
 		fflush(stdout);
 		scanf("%d", &personID);
+		printf("\n");
 
 		if(personID < 0){
 			char c;
@@ -112,6 +131,7 @@ int requestPersonWeight(){
 		printf("Enter the person's Weight: ");
 		fflush(stdout);
 		scanf("%d", &personID);
+		printf("\n");
 
 		if(personID < 0){
 			char c;
@@ -122,3 +142,37 @@ int requestPersonWeight(){
 	}
 	return personID;
 }
+
+
+void printInputList(){
+	//printf("(ls = Left Scan, rs = Right Scan, glu = Guard Left Unlock, gru = Guard Right Unlock, lo = Left Open, ro = Right Open, ws = Weight Scale, lc = Left Close, rc = Right Close, gll = Guard Left Lock, grl = Guard Right Lock, exit = Exit Program)\n\n");
+
+	printf("\nInput list:\n");
+	for(int i=0; i<NUM_INPUTS; i++){
+		printf("\t%s = %s,\n", inMessage[i], inMessageDesc[i]);
+	}
+	printf("Enter the event type: ");
+	fflush(stdout);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
