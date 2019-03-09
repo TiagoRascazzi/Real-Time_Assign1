@@ -29,8 +29,8 @@ void* lockedState(Person* person, Display* display);
 
 int main(int argc, const char* argv[]) {
 
-	int inputID;	// indicates who we should reply to
-	int chid;		// the channel ID
+	int inputID;
+	int chid;
 	pid_t displayPID;
 	int  displayCOID;
 	Display display; //display sent to the display
